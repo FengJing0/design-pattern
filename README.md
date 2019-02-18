@@ -210,3 +210,24 @@ const proxyImg = new ProxyImg('1.png')
 proxyImg.display()
 ```
 ***
+
+### 外观模式
+
+- 为子系统中的一组接口提供了一个高层接口
+- 使用者使用这个高层接口
+
+```javascript
+function bindEvent(elem,type,selector,fn){
+  if(fn == null){
+    if = selector
+    selector = null
+  }
+  // ...
+}
+
+// 调用
+bindEvent(elem,'click','#div',fn)
+bindEvent(elem,'click',fn)
+```
+
+***
