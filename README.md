@@ -231,3 +231,147 @@ bindEvent(elem,'click',fn)
 ```
 
 ***
+
+### [观察者模式](./src/Observer.js)
+
+- 发布&订阅
+- 一对多
+
+```javascript
+// 主题，保存状态，状态变化之后出发所有观察者对象
+class Subject {
+  constructor () {
+    this.state = 0
+    this.observers = []
+  }
+  getState () {
+    return this.state
+  }
+  setState (state) {
+    this.state = state
+    this.notifyAllObservers()
+  }
+  notifyAllObservers () {
+    this.observers.forEach(observer => {
+      observer.update()
+    })
+  }
+  attach (observer) {
+    this.observers.push(observer)
+  }
+}
+
+// 观察者
+class Observer {
+  constructor (name, subject) {
+    this.name = name
+    this.subject = subject
+    this.subject.attach(this)
+  }
+  update () {
+    console.log(`${this.name} update, state: ${this.subject.getState()}`)
+  }
+}
+
+let s = new Subject()
+let o1 = new Observer('o1', s)
+let o2 = new Observer('o2', s)
+let o3 = new Observer('o3', s)
+
+s.setState(1)
+s.setState(2)
+s.setState(3)
+```
+***
+
+### [迭代器模式](./src/Iterator.js)
+
+- `顺序`访问一个集合
+- 使用者无需知道集合的内部结构（封装）
+
+```javascript
+class Iterator {
+  constructor (container) {
+    this.list = container.list
+    this.index = 0
+  }
+  next () {
+    if (this.hasNext()) {
+      return this.list[this.index++]
+    }
+    return null
+  }
+  hasNext () {
+    return this.index < this.list.length
+  }
+}
+
+class Container {
+  constructor (list) {
+    this.list = list
+  }
+  getIterator () {
+    return new Iterator(this)
+  }
+}
+
+let arr = [1, 2, 3, 4, 5, 6]
+let container = new Container(arr)
+let iterator = container.getIterator()
+while (iterator.hasNext()) {
+  console.log(iterator.next())
+}
+```
+
+***
+
+### [状态模式](./src/State.js)
+
+- 一个对象有状态变化
+- 每次状态变化都会触发一个逻辑
+- 不能总用 if...else 来控制
+
+```javascript
+// 状态
+class State{
+  constructor (color) {
+    this.color = color
+  }
+  handle (context) {
+    console.log(`turn to ${this.color} light`)
+    context.setState(this)
+  }
+}
+
+// 主体
+class Context{
+  constructor () {
+    this.state = null
+  }
+  getState () {
+    return  this.state
+  }
+  setState (state) {
+    this.state = state
+  }
+}
+
+let context = new Context()
+
+let green = new State('green')
+let yellow = new State('yellow')
+let red = new State('red')
+
+green.handle(context)
+console.log(context.getState())
+
+yellow.handle(context)
+console.log(context.getState())
+
+red.handle(context)
+console.log(context.getState())
+```
+
+***
+
+### 其他设计模式
