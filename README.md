@@ -1,4 +1,4 @@
-# js的设计模式
+# Javascript 设计模式
 
 ## SOLID五大设计原则
 
@@ -286,7 +286,7 @@ s.setState(3)
 
 ### [迭代器模式](./src/Iterator.js)
 
-- `顺序`访问一个集合
+- `顺序` 访问一个集合
 - 使用者无需知道集合的内部结构（封装）
 
 ```javascript
@@ -375,3 +375,166 @@ console.log(context.getState())
 ***
 
 ### 其他设计模式
+
+- 原型模式
+  - clone自己，生成一个新对象
+  - java默认有clone接口，不用自己实现
+
+- 桥接模式
+  - 用于把抽象化与实现化解耦
+  - 使得二者可以独立变化
+  - （未找到JS中的经典应用）
+
+- 组合模式
+  - 生成树形结构，表示“整体-部分”关系
+  - 让整体和部分都具有一直的操作方式
+
+- 享元模式
+  - 共享内存（主要考虑内存，而非效率）
+  - 相同的数据，共享使用
+  - （JS中未找到经典应用场景）
+
+- 策略模式
+  - 不同策略分开处理
+  - 避免出现大量if...else 或者 switch...case
+  - （JS中未找到经典应用场景）
+
+- 模板方法模式
+  ```javascript
+  class Foo{
+    handle(){
+      handle1()
+      handle2()
+      handle3()
+    }
+    handle1(){ console.log('1') }
+    handle2(){ console.log('2') }
+    handle3(){ console.log('1') }
+  }
+  ```
+
+- 职责链模式
+  - 一步操作可能分为多个职责角色来完成
+  - 把这些角色都分开，然后用一个链串起来
+  - 将发起者和各个处理者进行隔离
+  ```javascript
+  class Action {
+    constructor(name){
+      this.name = name
+      this.nextAction = null
+    }
+    setNextAction(action){
+      this.nextAction = action
+    }
+    handle(){
+      console.log(`${this.name}` 审批)
+      if(this.nextAction != null){
+        this.nextAction.handle()
+      }
+    }
+  }
+
+  let a1 = new Action('组长')
+  let a2 = new Action('经理')
+  let a3 = new Action('总监')
+  a1.setNextAction(a2)
+  a2.setNextAction(a3)
+  a1.handle()
+  ```
+
+- 命令模式
+  - 发送者 -> 命令对象 -> 接受者
+  ```javascript
+  // 接受者
+  class Receiver{
+    exec(){
+      console.log('执行')
+    }
+  }
+  // 命令者
+  class Command{
+    constructor(receiver){
+      this.receiver = receiver
+    }
+    cmd(){
+      console.log('执行命令')
+      this.receiver.exec()
+    }
+  }
+  // 触发者
+  class Invoker{
+    constructor(command){
+      this.command = command
+    }
+    invoke(){
+      console.log('开始')
+      this.command.cmd()
+    }
+  }
+  let soldier = new Receiver()
+  let trumpeter = new Command(soldier)
+  let general = new Invoker(trumpeter)
+  general.invoke()
+  ```
+
+- 备忘录模式
+  - 随时记录一个对象的状态变化
+  - 随时可以恢复之前的某个状态（如撤销功能）
+  - 未找到JS中经典应用，除了一些工具（如编辑器）
+
+- 中介者模式
+  ```javascript
+  class A {
+    constructor(){
+      this.number = 0
+    }
+    setNumber(num,m){
+      this.number = num
+      if(m){
+        m.setB()
+      }
+    }
+  }
+  class B {
+    constructor(){
+      this.number = 0
+    }
+    setNumber(num,m){
+      this.number = num
+      if(m){
+        m.setA()
+      }
+    }
+  }
+
+  class Mediator{
+    constructor(a,b){
+      this.a = a
+      this.b = b
+    }
+    setA(){
+      let number = this.b.number
+      this.a.setNumber(number/100)
+    }
+    setB(){
+      let number = this.a.number
+      this.b.setNumber(number*100)
+    }
+  }
+
+  let a = new A()
+  let b = new B()
+  let m = new Mediator(a,b)
+  a.setNumber(100,m)
+  console.log(a.number,b.number)
+  b.setNumber(100,m)
+  console.log(a.number,b.number)
+  ```
+
+- 访问者模式
+  - 讲数据操作和数据结构进行分离
+  - 使用场景不多
+
+- 解释器模式
+  - 描述语言语法如何定义，如何解释和编译
+  - 用于专业场景
